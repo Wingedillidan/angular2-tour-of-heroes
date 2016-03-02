@@ -1,5 +1,6 @@
-(function(app) {
-    function Hero(id, name) {
+(function (app) {
+    "use strict";
+    function Hero (id, name) {
         this.id = id;
         this.name = name;
     }
@@ -7,19 +8,25 @@
     app.AppComponent =
         ng.core.Component({
             selector: 'my-app',
-            template: `<h1>{{title}}</h1>
-                       <h2>My Heroes</h2>
-                       <ul class="heroes">
-                           <li *ngFor="#hero of heroes">
-                               <span class="badge">{{hero.id}}</span> {{hero.name}}
-                           </li>
-                       </ul>
-                       <h2>{{hero.name}} details!</h2>
-                       <div><label>id: </label>{{hero.id}}</div>
-                       <div>
-                           <label>name: </label>
-                           <div><input [(ngModel)]="hero.name" placeholder="name"></div>
-                       </div>`,
+            template: `
+                <h1>{{title}}</h1>
+                <h2>My Heroes</h2>
+                    <ul class="heroes">
+                        <li *ngFor="#hero of heroes"
+                        [class.selected]="hero === selectedHero"
+                        (click)="onSelect(hero)">
+                            <span class="badge">{{hero.id}}</span> {{hero.name}}
+                        </li>
+                    </ul>
+                <div *ngIf="selectedHero">
+                    <h2>{{selectedHero.name}} details!</h2>
+                        <div><label>id: </label>{{selectedHero.id}}</div>
+                        <div>
+                            <label>name: </label>
+                            <div><input [(ngModel)]="selectedHero.name" placeholder="name"></div>
+                        </div>
+                </div>
+                `,
             styles:[`
                 .selected {
                     background-color: #CFD8DC !important;
@@ -41,13 +48,44 @@
                     height: 1.6em;
                     border-radius: 4px;
                 }
-                `]
+                .heroes li.selected:hover {
+                    background-color: #BBD8DC !important;
+                    color: white;
+                }
+                .heroes li:hover {
+                    color: #607D8B;
+                    background-color: #DDD;
+                    left: .1em;
+                }
+                .heroes .text {
+                    position: relative;
+                    top: -3px;
+                }
+                .heroes .badge {
+                    display: inline-block;
+                    font-size: small;
+                    color: white;
+                    padding: 0.8em 0.7em 0 0.7em;
+                    background-color: #607D8B;
+                    line-height: 1em;
+                    position: relative;
+                    left: -1px;
+                    top: -4px;
+                    height: 1.8em;
+                    margin-right: .8em;
+                    border-radius: 4px 0 0 4px;
+                }
+                `],
         })
+
         .Class({
             constructor: function() {
                 this.title = 'Tour of Heroes';
-                this.hero = new Hero(1, 'Windstorm');
                 this.heroes = HEROES;
+                this.selectedHero = null;
+                this.onSelect = function (hero) {
+                    this.selectedHero = hero;
+                };
             }
         });
 
@@ -61,6 +99,6 @@
         new Hero(17, 'Dynama'),
         new Hero(18, 'Dr IQ'),
         new Hero(19, 'Magma'),
-        new Hero(20, 'Tornado'),
-    ]
+        new Hero(20, 'Tornado')
+    ];
 })(window.app || (window.app = {}));
